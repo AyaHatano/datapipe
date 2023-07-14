@@ -1,0 +1,598 @@
+<!doctype html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html>
+  <head>
+    <title>My experiment</title> 
+    <script src="js/jquery.min.js"></script>
+    <script src="../jspsych.js"></script>
+    <script src="../plugins/jspsych-html-keyboard-response.js"></script>
+	<script src="../plugins/jspsych-image-keyboard-response.js"></script>
+	<script src="../plugins/jspsych-survey-multi-choice.js"></script>
+	<script src="../plugins/jspsych-survey-multi-select.js"></script>
+	<script src="../plugins/jspsych-survey-likert.js"></script>
+	<script src="../plugins/jspsych-survey-text.js"></script>
+	<script src="../plugins/jspsych-html-button-response.js"></script>
+	<script src="../plugins/jspsych-instructions.js"></script>
+	<script src="../plugins/jspsych-fullscreen.js"></script>
+	<script src="../plugins/jspsych-external-html.js"></script>
+	<script src="../plugins/jspsych-html-slider-response.js"></script>
+	<script src="../plugins/jspsych-audio-keyboard-response.js"></script>
+	<script src="../plugins/jspsych-preload.js"></script>
+	<script src="../plugins/jspsych-call-function.js"></script>
+	<script src="../plugins/mt.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <link href="../css/jspsych.css" rel="stylesheet" type="text/css"></link>
+ 
+  </head>
+  <body>
+  	<div id ="jspsych-target"></div>
+  </body>
+  <script type = "text/javascript">
+
+  </script>
+ 
+  <script>
+//**********Setting**********//
+	//Time stamp
+	var date = new Date();
+	var timestamp = date.getFullYear() + "-"+(date.getMonth()+1)+"-"+date.getDate()+"_"+date.getHours()+"_"+date.getMinutes()+"_"+date.getSeconds();
+      
+	//Shuffle script
+	function shuffle(array){
+		var n = array.length;
+		var t = 0;
+		var i = 0;
+		while (n){
+			i = Math.floor(Math.random()*n--);
+			t = array[n];
+			array[n]=array[i];
+			array[i] = t;
+		};
+		return array;
+	};
+
+	//Sum script
+	var sum  = function(arr) {
+		var sum = 0;
+		CorrRep.forEach(function(elm) { // CorrRep = 合計したい配列名に変更
+        sum += elm;
+		});
+		return sum;
+	};
+	
+	
+	//submit answers
+	var anstrial = [""];
+	function kakunin(){
+		var answ = document.answer.answer.value;
+		anstrial.push(answ);
+	};
+	
+	//enter submit stop script
+	function submitStop(e){
+		if (!e) var e = window.event;
+		if(e.keyCode == 13)
+        return false;
+	}
+
+	//counter script
+	var counter = function(str, seq){
+		return str.split(seq).length-1;
+	}
+
+	//levenshtein script
+	function levenshteinDistance (s, t) {
+		if (!s.length) return t.length;
+		if (!t.length) return s.length;
+		return Math.min(
+        levenshteinDistance(s.substr(1), t) + 1,
+        levenshteinDistance(t.substr(1), s) + 1,
+        levenshteinDistance(s.substr(1), t.substr(1)) + (s[0] !== t[0] ? 1 : 0)
+		) + 1;
+	};
+	
+	
+	//screen info
+	var sh = window.screen.height;
+	var sw = window.screen.width;
+	var ash = window.screen.availHeight;
+	var asw = window.screen.availWidth;
+	
+	var screenInfo = "ScreenWidth:" + sw +"-"+ "ScreenHeight:" + sh +"-"+ "availWidth:" + asw +"-"+ "availHeight:" + ash;
+	
+	//OS info
+	var os = navigator.platform;
+	
+	//check browser
+
+	var BRresult = 'null';
+	 
+	var agent = window.navigator.userAgent.toLowerCase();
+	var version = window.navigator.appVersion.toLowerCase();
+ 
+	if(agent.indexOf("msie") > -1){
+		if (version.indexOf("msie 6.") > -1){
+			 BRresult = 'IE6';
+		}else if (version.indexOf("msie 7.") > -1){
+			 BRresult = 'IE7';
+		}else if (version.indexOf("msie 8.") > -1){
+			 BRresult = 'IE8';
+		}else if (version.indexOf("msie 9.") > -1){
+			 BRresult = 'IE9';
+		}else if (version.indexOf("msie 10.") > -1){
+			 BRresult = 'IE10';
+		}else{
+			 BRresult = 'IE(versionUnKnown)';
+		}
+		}else if(agent.indexOf("trident/7") > -1){
+			BRresult = 'IE11';
+		}else if(agent.indexOf("edge") > -1){
+			BRresult = 'Edge';
+		}else if (agent.indexOf("chrome") > -1){
+			BRresult = 'Chrome';
+		}else if (agent.indexOf("safari") > -1){
+			BRresult = 'Safari';
+		}else if (agent.indexOf("opera") > -1){
+			BRresult = 'Opera';
+		}else if (agent.indexOf("firefox") > -1){
+			BRresult = 'Firefox';
+		}
+	
+
+
+//preload
+	const images = [
+			'img/migo/bag1.jpg',
+			'img/migo/bag2.jpg',
+			'img/migo/bag3.jpg',
+			'img/migo/bag4.jpg',
+			'img/migo/bag5.jpg',
+			'img/migo/bag6.jpg',
+			'img/migo/button1.jpg',
+			'img/migo/button2.jpg',
+			'img/migo/button3.jpg',
+			'img/migo/button4.jpg',
+			'img/migo/button5.jpg',
+			'img/migo/button6.jpg',
+			'img/migo/car1.jpg',
+			'img/migo/car2.jpg',
+			'img/migo/car3.jpg',
+			'img/migo/car4.jpg',
+			'img/migo/car5.jpg',
+			'img/migo/car6.jpg',
+			'img/migo/chilli1.jpg',
+			'img/migo/chilli2.jpg',
+			'img/migo/chilli3.jpg',
+			'img/migo/chilli4.jpg',
+			'img/migo/chilli5.jpg',
+			'img/migo/chilli6.jpg',
+			'img/migo/key1.jpg',
+			'img/migo/key2.jpg',
+			'img/migo/key3.jpg',
+			'img/migo/key4.jpg',
+			'img/migo/key5.jpg',
+			'img/migo/key6.jpg',
+			'img/migo/mushroom1.jpg',
+			'img/migo/mushroom2.jpg',
+			'img/migo/mushroom3.jpg',
+			'img/migo/mushroom4.jpg',
+			'img/migo/mushroom5.jpg',
+			'img/migo/mushroom6.jpg',
+			];
+
+
+
+const preload = {
+		type:'preload',
+		images:images,
+	};
+
+
+	//stimuli
+	var task_stimuli = [
+		{stimulus:'<center><img src = "img/migo/bag1.jpg"/></center>', name:"bag1", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/bag2.jpg"/></center>', name:"bag2", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/bag3.jpg"/></center>', name:"bag3", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/bag4.jpg"/></center>', name:"bag4", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/bag5.jpg"/></center>', name:"bag5", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/bag6.jpg"/></center>', name:"bag6", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/broc1.jpg"/></center>', name:"broc1", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/broc2.jpg"/></center>', name:"broc2", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/broc3.jpg"/></center>', name:"broc3",data:{ attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/broc4.jpg"/></center>', name:"broc4",data:{ attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/broc5.jpg"/></center>', name:"broc5", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/broc6.jpg"/></center>', name:"broc6", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/button1.jpg"/></center>', name:"button1",data:{ attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/button2.jpg"/></center>', name:"button2", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/button3.jpg"/></center>', name:"button3", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/button4.jpg"/></center>', name:"button4", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/button5.jpg"/></center>', name:"button5", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/button6.jpg"/></center>', name:"button6", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/chilli1.jpg"/></center>', name:"chilli1", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/chilli2.jpg"/></center>', name:"chilli2", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/chilli3.jpg"/></center>', name:"chilli3", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/chilli4.jpg"/></center>', name:"chilli4", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/chilli5.jpg"/></center>', name:"chilli5", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/chilli6.jpg"/></center>', name:"chilli6", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/key1.jpg"/></center>', name:"key1", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/key2.jpg"/></center>', name:"key2", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/key3.jpg"/></center>', name:"key3", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/key4.jpg"/></center>', name:"key4", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/key5.jpg"/></center>', name:"key5", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/key6.jpg"/></center>', name:"key6", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/mushroom1.jpg"/></center>', name:"mushroom1", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/mushroom2.jpg"/></center>', name:"mushroom2", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/mushroom3.jpg"/></center>', name:"mushroom3", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/mushroom4.jpg"/></center>', name:"mushroom4", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/mushroom5.jpg"/></center>', name:"mushroom5", data:{attribute:"j"}},
+		{stimulus:'<center><img src = "img/migo/mushroom6.jpg"/></center>', name:"mushroom6", data:{attribute:"j"}},
+	];
+	
+// make stimulus list
+var bag =["bag1", "bag2", "bag3", "bag4", "bag5", "bag6"];
+var broc =["broc1", "broc2", "broc3", "broc4","broc5", "broc6"];
+var button =["button1", "button2", "button3", "button4","button5", "button6"];
+var chilli =["chilli1", "chilli2", "chilli3", "chilli4","chilli5", "chilli6"];
+var key =["key1", "key2", "key3", "key4", "key5","key6"];
+var mushroom =["mushroom1", "mushroom2", "mushroom3", "mushroom4", "mushroom5","mushroom6"];
+
+shuffle(bag);
+shuffle(broc);
+shuffle(button);
+shuffle(chilli);
+shuffle(key);
+shuffle(mushroom);
+
+var bag_target_name = bag.slice(3);
+var broc_target_name = broc.slice(3);
+var button_target_name = button.slice(3);
+var chilli_target_name = chilli.slice(3);
+var key_target_name = key.slice(3);
+var mushroom_target_name = mushroom.slice(3);
+
+var bag_foil_name = bag.slice(0, 3);
+var broc_foil_name = broc.slice(0, 3);
+var button_foil_name = button.slice(0, 3);
+var chilli_foil_name = chilli.slice(0, 3);
+var key_foil_name= key.slice(0, 3);
+var mushroom_foil_name = mushroom.slice(0, 3);
+
+const target_name = [...bag_target_name, ...broc_target_name, ...button_target_name, ...chilli_target_name, ...key_target_name, ...mushroom_target_name];
+const foil_name = [...bag_foil_name, ...broc_foil_name, ...button_foil_name, ...chilli_foil_name, ...key_foil_name, ...mushroom_foil_name];
+console.log(target_name);
+
+
+var stimuli_target = task_stimuli.filter((v) => target_name.includes(v.name));
+var stimuli_foil = task_stimuli.filter((v) => foil_name.includes(v.name));
+
+console.log(stimuli_target);
+console.log(stimuli_foil);
+
+stimuli_target = stimuli_target.map(e => ({...e, attribute:"f"}));
+var stimuli_recognition =[...stimuli_target,...stimuli_foil];
+
+console.log(stimuli_recognition);
+
+//confirmID
+	var mt = new MersenneTwister();
+	
+
+//**********Subject imformation**********//	
+	var id = [];
+	var subage = [];
+	var mf = ["男性","女性","その他・答えたくない"];
+	
+	//consent
+	var check_consent = function(elem) {
+		if (document.getElementById('consent_checkbox').checked) {
+        return true;
+    }
+    else {
+        alert("調査への参加をご希望の場合は、「私は同意説明の内容を理解し、調査に参加します」にチェックを入れてスタートボタンをクリックしてください。'");
+        return false;
+    }
+    return false;
+	};
+
+	var hello = {
+		type:'html-button-response',
+		stimulus:'この度は調査へのご参加ありがとうございます。準備ができたら、「次へ」をクリックして調査を始めてください',
+		choices:['次へ']
+	}
+
+
+	var consent = {
+		type:'external-html',
+		url: "consent.html",
+		cont_btn: "start",
+		check_fn: check_consent,
+	};
+
+	//ID
+	var par_info = {};
+	var subID = {
+		type: 'survey-text',
+		questions: [{prompt:"ID（生年月日の数字）を半角英数で入力してください。", columns:10, required: true, name:'participantID'}],
+		data: {questions: "SubjectID"},
+		button_label:'次へ',
+		on_finish: function (data){
+			// text value
+			par_info.id = data.response.participantID
+			jsPsych.data.addDataToLastTrial({SubjectInfo: par_info.id});
+		}
+	};
+		
+	//age
+	var age = {
+		type:'survey-text',
+		questions: [{prompt:"あなたの年齢を半角英数で入力してください。", columns:10, required: true, name:'participantage'}],
+		button_label:'次へ',
+		data: {questions: "age"},
+		on_finish: function(data){
+			par_info.age = data.response.participantage
+			// text value
+			jsPsych.data.addDataToLastTrial({SubjectInfo: par_info.age});
+			jsPsych.data.get().addToLast({OS:os});
+			jsPsych.data.get().addToLast({Screen:screenInfo});
+			jsPsych.data.get().addToLast({Browser:BRresult});
+
+		}
+	};
+
+	
+	//gender
+
+	var gender = {
+		type: 'html-button-response',
+		stimulus: "<center>あなたの性別を選択してください</center>",
+		choices: mf,
+		timing_post_trial:0,
+		is_html: true,
+		on_finish:function (s){
+			if (s.response == 0){
+				jsPsych.data.addDataToLastTrial({SubjectInfo: "男性"});
+			}else if(s.response == 1){
+				jsPsych.data.addDataToLastTrial({SubjectInfo: "女性"});
+			}else {
+				jsPsych.data.addDataToLastTrial({SubjectInfo: "その他・答えたくない"});
+		}console.log(s.response);
+	  }
+	  
+	};
+
+	
+
+//**********Experiment**********//	
+	
+
+//Instruction
+
+	var instruction1 = {
+  type: 'html-button-response',
+  stimulus: '<p>この調査では、画像を見たときのご自身の感情を評価するなど、簡単な課題を複数行って頂きます。課題は全部で3つあります。<br>あなたの能力や深層心理を測定して他者と比較するものではないので、気楽な気持ちで臨んでください。<p>それでは、次のページから、1つ目の課題について説明します。<p>「次へ」ボタンをクリックしてください。',
+  choices: ['次へ']
+
+	}
+
+	var instruction2= {
+  type: 'html-button-response',
+  stimulus: '<p>1つ目の課題を説明します。この課題では、画像を見たときのご自身の感情を評価していただきます。<p>画像が1枚ずつ表示されますので、<b>画像を見たときに感じた感情に最も合うものを、下の選択肢の中から選んでください</b>。<p>画像は全部で18枚あります。<br><b>深く考えすぎず、直感的な判断</b>をしてください。<p>なお、<b>評価中は、音楽を聞いたり、テレビを見るなどの他の活動はしないでください。</b>お手洗いなどは、調査を始める前に済ませてください。<p>それでは準備ができたら、「次へ」ボタンをクリックして始めてください。',
+  choices: ['次へ']
+	}
+
+
+// image evaluation task
+
+	var fixation = {
+		type: 'html-keyboard-response',
+			stimulus: '<div style="font-size:60px;">+</div>',
+			choices: jsPsych.NO_KEYS,
+			trial_duration: 500,
+			data:{task: 'fixation'}
+		};	
+
+	
+	// make questionnaire
+	var scale_valence = ['1:<br>とても不快である','2','3','4', '5', '6','7', '8','9:<br>とても心地よい'];
+	var LKpoint ={};
+	
+	var evaluation_task = {
+	  type: 'survey-likert',
+	  questions: [{prompt:'この画像から感じる心地よさを評価してください', labels: scale_valence, required:true, name: "valence"} ,
+	  						], 
+    scale:[scale_valence],
+	  scale_width: 500,
+	  button_label: '次へ',
+	  preamble:function(){return jsPsych.timelineVariable('stimulus')},
+	  data:{stimuli: function(){return jsPsych.timelineVariable('name')}},
+	  on_finish: function (data){
+	  	//var imgstim = function(){return jsPsych.timelineVariable('name')}
+			LKpoint[0] = data.response.valence
+			LKpoint[1] = data.response.arousal
+			jsPsych.data.addDataToLastTrial({task: "image_evaluation"});
+			//jsPsych.data.addDataToLastTrial({stimuli: imgstim});
+			jsPsych.data.addDataToLastTrial({Valence: LKpoint[0]});
+			jsPsych.data.addDataToLastTrial({Arousal: LKpoint[1]});
+			
+		}
+	};
+
+	var evaluation_procedure = {
+		timeline: [evaluation_task],
+		timeline_variables:stimuli_target,
+		randomize_order:true
+	};
+  
+  // delay
+
+  
+  var tb = '<form name = "answer" autocomplete ="off"><textarea = "answer" id = "anstb"  name= "answer" cols="80" rows="20" wrap= "soft" onKeyPress="return submitStop(event)" onKeyup="kakunin()" autofocus  placeholder="教示にしたがって回答を入力してください"></textarea></form>';
+ 	var cap =  '<center><br>これから2つ目の課題を説明します。</p>100から3つずつ数字を引き算し、下の回答欄に記入してください。回答と回答の間はスペースで区切ってください。<br>制限時間は約1分間で、時間が来ると自動的に切り替わります。</center>'
+  var distraction_task = {
+			type: 'html-keyboard-response',
+			stimulus: function(){
+				var stm = cap+tb;
+				return stm
+			},
+			trial_duration: 60000,
+			response_ends_trial: false,
+			post_trial_gap:100,
+			on_finish: function(){
+
+				jsPsych.data.addDataToLastTrial({Answer: anstrial[anstrial.length-1]});
+			},
+	}	
+
+ // recognition
+  var instruction3 ={
+  	type: 'html-button-response',
+ 	  stimulus: '<p>3つ目の課題を説明します。<p>1つ目と同じように、画像が1枚ずつ表示されます。<br>画像は、先程評価していただいた画像もあれば、初めて見ていただく画像もあります。<br><b>表示された画像が、先程評価した画像か、初めて見る画像かを判断し、<br>先程評価した画像であればキーボードの「F」を、<br>初めて見る画像であればキーボードの「J」ボタンを押して回答してください</b>。<p>画像は全部で36枚あります。<br><b>深く考えすぎず、直感的な判断</b>をしてください。<p>それでは準備ができたら、「次へ」ボタンをクリックして始めてください。',
+    choices: ['次へ']
+  };
+
+	var recognition_task ={
+	  type: 'html-keyboard-response',
+	  stimulus:function(){return jsPsych.timelineVariable('stimulus',true)},
+		choices:['f', 'j'],
+		prompt:"<p>評価した画像であれば<b>F</b>を、違う場合は<b>J</b>を押してください</p>",
+		data:function(){return jsPsych.timelineVariable('data',true)},
+		on_finish: function(data){
+			data.correct = data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode(data.attribute);
+		}
+	};
+
+	var recognition_Proc = {
+		timeline: [fixation, recognition_task],
+		timeline_variables:stimuli_recognition,
+		randomize_order:true
+	};
+	  
+	
+
+//************LAST QUESTIONS*************//
+	var yn = ["はい","いいえ"];
+	var lastradio1 = ["スムーズに動いた","やや問題があった", "重大な問題があったため，スムーズに反応できなかった"];
+	var lastq1 = {
+		type: 'survey-multi-choice',
+		questions: [{prompt: "課題はスムーズに動きましたか？<br>",options:lastradio1}],
+		required: [true],
+		button_label:'次へ',
+		data: {questions: "Last questions"},
+	};
+	
+	var lastradio2 = ["時々画像やメッセージがロードされず，リロードしなければならなかった。","画像やメッセージはロードされたが，何も表示されないことがあった", "実験中，インターネット接続が途切れたり，速度が遅くなったりした","全て問題なく動作した"];
+	var lastq2 = {
+		type: 'survey-multi-choice',
+		questions: [{prompt:"問題があったと回答された方は，どのような問題があったか，あてはまる項目を選んでください。<br>問題がなかった方は「全て問題なく動作した」を選択してください。 ", options: lastradio2}],
+		required: [true],
+		button_label:'次へ',
+		data: {questions: "Last questions"},
+	};
+	
+	var lastradio3 = ["初めて参加する","過去に参加したことがある"];
+	var lastq3 = {
+		type: 'survey-multi-choice',
+		questions: [{prompt:"この調査に参加するのは初めてですか？ ", options: lastradio3}],
+		required: [true],
+		button_label:'次へ',
+		data: {questions: "Last questions"},
+	};
+	
+	var lastq4 = {
+		type: 'html-button-response',
+		stimulus: "課題の間，何か課題とは関係のないこと(音楽を聞く，テレビを見るなど)をしましたか？",
+		choices: yn,
+		data: {questions: "Last questions"}
+	};
+
+	var lastq5 = {
+		type: 'html-button-response',
+		stimulus: "何らかの事情で課題を中断しましたか？？",
+		choices: yn,
+		is_html: true,
+		data: {questions: "Last questions"}
+	};
+	
+	var lastq6 = {
+		type: 'survey-text',
+		questions: [{prompt:"課題中に中断や不具合が生じた場合は，こちらに詳しく記入してください。他に気づいたことがあれば、それらもこちらに記入してください。", rows: 5, columns: 40}],
+		button_label:'次へ',
+		data: {questions: "Last questions"}
+	};
+	
+	
+	var fin = {
+	type: 'html-keyboard-response',
+	stimulus: function(){
+		var s ='<p style = "font-size: 30px;">ありがとうございました。これで調査は終わりです。最後に、TABキーを押してください。';//Experiment is over! Please press the space key!',
+			return s
+		},
+		choices: ['Tab'],
+		on_finish:function(){
+			var dat = jsPsych.data.get().csv();
+			var expCode = mt.nextInt(1000,100001);
+			var filename = 'demo_recognition_'+expCode+'_'+timestamp+'.csv';
+			saveData(filename, dat);
+			//Last Message
+			jsPsych.endExperiment('<p style = "font-size: 30px;">この度は，調査へのご協力ありがとうございました。<br>ウィンドウを閉じて実験を終了してください。</p>');
+		}
+	};
+	
+
+
+//**********experiment.push**********//
+	
+	var timeline = [];
+	timeline.push(preload);
+	timeline.push({
+		type:'fullscreen',
+		message:"<p>この度は調査へのご参加ありがとうございます。次ページから調査を開始します。</p><p>準備ができたら次に進んでください。</p>",
+		button_label:'次へ',
+		fullscreen_mode:true
+	});
+	//timeline.push(hello);
+	//timeline.push(consent);
+	//timeline.push(subID);
+	timeline.push(age);
+	//timeline.push(gender);
+	timeline.push(instruction1);
+	timeline.push(instruction2);
+	timeline.push(evaluation_procedure);
+	
+	timeline.push(distraction_task);
+	timeline.push(instruction3);
+	timeline.push(recognition_Proc);
+	timeline.push(lastq1);
+	timeline.push(lastq2);
+	timeline.push(lastq3);
+	timeline.push(lastq4);
+	timeline.push(lastq5);
+	timeline.push(lastq6);
+	timeline.push({
+		type: 'fullscreen',
+		fullscreen_mode:false
+	})
+	timeline.push(fin);
+		
+//**********SAVE DATA**********//
+	
+// call the saveData function after the experiment is over
+
+	function saveData(filename, filedata){
+		$.ajax({
+			type:'post',
+			cache: false,
+			url: 'save_data.php', // this is the path to the above PHP script
+			data: {filename: filename, filedata: filedata}
+		});
+	};
+
+
+	//ONLINE SAVE
+	jsPsych.init({
+		timeline: timeline,
+		fullscreen:true,
+	});
+
+</script>
+</html>
